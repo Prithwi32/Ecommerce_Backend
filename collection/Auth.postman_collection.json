@@ -1,0 +1,196 @@
+{
+    "info": {
+        "_postman_id": "random-uuid",
+        "name": "Authentication API Collection",
+        "description": "Collection of all Authentication related API endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Register Admin",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Admin User\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\",\n    \"passwordConfirm\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/register",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "register"]
+                },
+                "description": "Register a new admin user"
+            }
+        },
+        {
+            "name": "Login",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.token) {",
+                            "    pm.environment.set(\"token\", jsonData.token);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/login",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "login"]
+                },
+                "description": "Login with email and password"
+            }
+        },
+        {
+            "name": "Logout",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/auth/logout",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "logout"]
+                },
+                "description": "Logout the current user"
+            }
+        },
+        {
+            "name": "Get Current User",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/auth/me",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "me"]
+                },
+                "description": "Get details of the currently logged in user"
+            }
+        },
+        {
+            "name": "Update Password",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"newpassword123\",\n    \"passwordConfirm\": \"newpassword123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/updatepassword",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "updatepassword"]
+                },
+                "description": "Update the current user's password"
+            }
+        },
+        {
+            "name": "Forgot Password",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"admin@example.com\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/forgotpassword",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "forgotpassword"]
+                },
+                "description": "Request a password reset token"
+            }
+        },
+        {
+            "name": "Reset Password",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"password\": \"newpassword123\",\n    \"passwordConfirm\": \"newpassword123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/resetpassword/:resettoken",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "auth", "resetpassword", ":resettoken"],
+                    "variable": [
+                        {
+                            "key": "resettoken",
+                            "value": "",
+                            "description": "Password reset token received in email"
+                        }
+                    ]
+                },
+                "description": "Reset password using the token received in email"
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+} 
