@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "eco-backend-collection",
+		"name": "Eco Backend API",
+		"description": "Collection for Eco Backend API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Single Product (Clothing)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"name": "Nike Air Max 2024",
+								"description": "The latest Nike Air Max shoes with advanced comfort technology",
+								"price": 199.99,
+								"discountPrice": 179.99,
+								"category": "65f1a2b3c4d5e6f7g8h9i0j1",
+								"brand": "65f1a2b3c4d5e6f7g8h9i0j2",
+								"variants": [
+									{
+										"label": "US 7",
+										"stock": 10,
+										"price": 199.99
+									},
+									{
+										"label": "US 8",
+										"stock": 15,
+										"price": 199.99
+									},
+									{
+										"label": "US 9",
+										"stock": 20,
+										"price": 199.99
+									},
+									{
+										"label": "US 10",
+										"stock": 15,
+										"price": 209.99
+									}
+								],
+								"colors": [
+									{
+										"name": "Classic Black",
+										"code": "#000000",
+										"stock": 30,
+										"images": [
+											{
+												"public_id": "products/nike-air-max-black-1",
+												"url": "https://example.com/images/nike-air-max-black-1.jpg"
+											},
+											{
+												"public_id": "products/nike-air-max-black-2",
+												"url": "https://example.com/images/nike-air-max-black-2.jpg"
+											}
+										]
+									},
+									{
+										"name": "White/Red",
+										"code": "#FFFFFF",
+										"stock": 20,
+										"images": [
+											{
+												"public_id": "products/nike-air-max-white-red-1",
+												"url": "https://example.com/images/nike-air-max-white-red-1.jpg"
+											},
+											{
+												"public_id": "products/nike-air-max-white-red-2",
+												"url": "https://example.com/images/nike-air-max-white-red-2.jpg"
+											}
+										]
+									}
+								],
+								"mainImage": {
+									"public_id": "products/nike-air-max-main",
+									"url": "https://example.com/images/nike-air-max-main.jpg"
+								},
+								"images": [
+									{
+										"public_id": "products/nike-air-max-1",
+										"url": "https://example.com/images/nike-air-max-1.jpg"
+									},
+									{
+										"public_id": "products/nike-air-max-2",
+										"url": "https://example.com/images/nike-air-max-2.jpg"
+									}
+								],
+								"specifications": [
+									{
+										"key": "Material",
+										"value": "Synthetic and mesh upper"
+									},
+									{
+										"key": "Sole",
+										"value": "Air Max cushioning"
+									},
+									{
+										"key": "Closure",
+										"value": "Lace-up"
+									}
+								],
+								"featured": true
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"]
+						},
+						"description": "Create a single clothing product with variants"
+					}
+				},
+				{
+					"name": "Create Single Product (Material)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"name": "Premium Silk Fabric",
+								"description": "High-quality silk fabric for dressmaking and home decor",
+								"price": 29.99,
+								"discountPrice": 24.99,
+								"category": "65f1a2b3c4d5e6f7g8h9i0j4",
+								"brand": "65f1a2b3c4d5e6f7g8h9i0j5",
+								"variants": [
+									{
+										"label": "2m x 5m",
+										"stock": 50,
+										"price": 99.99,
+										"dimensions": {
+											"width": 2,
+											"length": 5,
+											"unit": "m"
+										}
+									},
+									{
+										"label": "3m x 5m",
+										"stock": 40,
+										"price": 129.99,
+										"dimensions": {
+											"width": 3,
+											"length": 5,
+											"unit": "m"
+										}
+									},
+									{
+										"label": "100cm x 150cm",
+										"stock": 100,
+										"price": 39.99,
+										"dimensions": {
+											"width": 100,
+											"length": 150,
+											"unit": "cm"
+										}
+									}
+								],
+								"colors": [
+									{
+										"name": "Royal Blue",
+										"code": "#4169E1",
+										"stock": 90,
+										"images": [
+											{
+												"public_id": "products/silk-royal-blue-1",
+												"url": "https://example.com/images/silk-royal-blue-1.jpg"
+											}
+										]
+									},
+									{
+										"name": "Burgundy",
+										"code": "#800020",
+										"stock": 100,
+										"images": [
+											{
+												"public_id": "products/silk-burgundy-1",
+												"url": "https://example.com/images/silk-burgundy-1.jpg"
+											}
+										]
+									}
+								],
+								"mainImage": {
+									"public_id": "products/silk-fabric-main",
+									"url": "https://example.com/images/silk-fabric-main.jpg"
+								},
+								"images": [
+									{
+										"public_id": "products/silk-fabric-1",
+										"url": "https://example.com/images/silk-fabric-1.jpg"
+									}
+								],
+								"specifications": [
+									{
+										"key": "Material",
+										"value": "100% Pure Silk"
+									},
+									{
+										"key": "Weight",
+										"value": "16mm"
+									},
+									{
+										"key": "Care",
+										"value": "Dry clean only"
+									}
+								],
+								"featured": false
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"]
+						},
+						"description": "Create a single material product with dimensional variants"
+					}
+				},
+				{
+					"name": "Create Bulk Products",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"products": [
+									{
+										"name": "Cotton T-Shirt",
+										"description": "Classic cotton t-shirt with comfortable fit",
+										"price": 24.99,
+										"discountPrice": 19.99,
+										"category": "65f1a2b3c4d5e6f7g8h9i0j1",
+										"brand": "65f1a2b3c4d5e6f7g8h9i0j2",
+										"variants": [
+											{
+												"label": "S",
+												"stock": 20,
+												"price": 24.99
+											},
+											{
+												"label": "M",
+												"stock": 25,
+												"price": 24.99
+											},
+											{
+												"label": "L",
+												"stock": 20,
+												"price": 24.99
+											}
+										],
+										"colors": [
+											{
+												"name": "Navy Blue",
+												"code": "#000080",
+												"stock": 35,
+												"images": [
+													{
+														"public_id": "products/tshirt-navy-1",
+														"url": "https://example.com/images/tshirt-navy-1.jpg"
+													}
+												]
+											}
+										],
+										"mainImage": {
+											"public_id": "products/tshirt-main",
+											"url": "https://example.com/images/tshirt-main.jpg"
+										},
+										"images": [
+											{
+												"public_id": "products/tshirt-1",
+												"url": "https://example.com/images/tshirt-1.jpg"
+											}
+										],
+										"specifications": [
+											{
+												"key": "Material",
+												"value": "100% Cotton"
+											}
+										],
+										"featured": false
+									},
+									{
+										"name": "Decorative Wallpaper",
+										"description": "Premium wallpaper with elegant floral pattern",
+										"price": 49.99,
+										"discountPrice": 44.99,
+										"category": "65f1a2b3c4d5e6f7g8h9i0j6",
+										"brand": "65f1a2b3c4d5e6f7g8h9i0j7",
+										"variants": [
+											{
+												"label": "5m x 0.53m",
+												"stock": 100,
+												"price": 49.99,
+												"dimensions": {
+													"width": 0.53,
+													"length": 5,
+													"unit": "m"
+												}
+											},
+											{
+												"label": "10m x 0.53m",
+												"stock": 75,
+												"price": 89.99,
+												"dimensions": {
+													"width": 0.53,
+													"length": 10,
+													"unit": "m"
+												}
+											}
+										],
+										"colors": [
+											{
+												"name": "Cream",
+												"code": "#FFFDD0",
+												"stock": 85,
+												"images": [
+													{
+														"public_id": "products/wallpaper-cream-1",
+														"url": "https://example.com/images/wallpaper-cream-1.jpg"
+													}
+												]
+											}
+										],
+										"mainImage": {
+											"public_id": "products/wallpaper-main",
+											"url": "https://example.com/images/wallpaper-main.jpg"
+										},
+										"images": [
+											{
+												"public_id": "products/wallpaper-1",
+												"url": "https://example.com/images/wallpaper-1.jpg"
+											}
+										],
+										"specifications": [
+											{
+												"key": "Material",
+												"value": "Non-woven"
+											},
+											{
+												"key": "Pattern Repeat",
+												"value": "64cm"
+											}
+										],
+										"featured": true
+									}
+								]
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/bulk",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products", "bulk"]
+						},
+						"description": "Create multiple products in bulk with different variant types"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+} 

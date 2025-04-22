@@ -573,4 +573,77 @@ exports.downloadSalesReport = asyncHandler(async (req, res) => {
 
     // Finalize PDF
     doc.end();
+});
+
+// @desc    Create multiple products in bulk
+// @route   POST /api/v1/products/bulk
+// @access  Private/Admin
+exports.createBulkProducts = asyncHandler(async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { products } = req.body;
+
+        if (!Array.isArray(products) || products.length === 0) {
+            throw new ErrorResponse('Please provide an array of products', 400);
+        }
+
+        // Process each product
+        const createdProducts = [];
+        for (const productData of products) {
+            // Set default values for each product
+            const defaultedProductData = {
+                ...productData,
+                isActive: true,
+                isFeatured: productData.isFeatured || false,
+                soldCount: 0,
+                averageRating: 0,
+                reviewCount: 0
+            };
+
+            // Create the product
+            const product = await Product.create([defaultedProductData], { session });
+
+            // Handle images if provided in the product data
+            if (productData.mainImage) {
+                product[0].mainImage = productData.mainImage;
+            }
+
+            if (productData.images && productData.images.length > 0) {
+                product[0].images = productData.images;
+            }
+
+            // Handle sizes if provided
+            if (productData.sizes && productData.sizes.length > 0) {
+                product[0].sizes = productData.sizes;
+                // Calculate total stock from all sizes
+                product[0].stock = productData.sizes.reduce((total, size) => total + size.stock, 0);
+            }
+
+            // Handle colors if provided
+            if (productData.colors && productData.colors.length > 0) {
+                product[0].colors = productData.colors;
+                // Calculate total stock from all colors
+                product[0].stock = productData.colors.reduce((total, color) => total + color.stock, 0);
+            }
+
+            // Save the product
+            await product[0].save({ session });
+            createdProducts.push(product[0]);
+        }
+
+        await session.commitTransaction();
+
+        res.status(201).json({
+            success: true,
+            count: createdProducts.length,
+            data: createdProducts
+        });
+    } catch (error) {
+        await session.abortTransaction();
+        return next(error);
+    } finally {
+        session.endSession();
+    }
 }); 

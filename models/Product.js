@@ -33,6 +33,60 @@ const productSchema = new mongoose.Schema({
     required: [true, 'A product must have stock quantity'],
     min: [0, 'Stock cannot be negative']
   },
+  variants: [{
+    label: {
+      type: String,
+      required: [true, 'Variant must have a label']
+    },
+    stock: {
+      type: Number,
+      required: [true, 'Variant must have stock quantity'],
+      min: [0, 'Variant stock cannot be negative']
+    },
+    price: {
+      type: Number,
+      min: [0, 'Variant price must be greater than or equal to 0']
+    },
+    dimensions: {
+      width: {
+        type: Number,
+        min: [0, 'Width must be greater than or equal to 0']
+      },
+      length: {
+        type: Number,
+        min: [0, 'Length must be greater than or equal to 0']
+      },
+      unit: {
+        type: String,
+        enum: ['cm', 'm', 'in', 'ft'],
+        default: 'm'
+      }
+    },
+    sku: String
+  }],
+  colors: [{
+    name: {
+      type: String,
+      required: true
+    },
+    code: {
+      type: String,
+      required: true
+    },
+    stock: {
+      type: Number,
+      required: true,
+      min: [0, 'Color stock cannot be negative']
+    },
+    images: [{
+      public_id: String,
+      url: String
+    }]
+  }],
+  mainImage: {
+    public_id: String,
+    url: String
+  },
   images: [{
     public_id: String,
     url: String
@@ -99,6 +153,38 @@ productSchema.index({ price: 1 });
 // Create slug before saving
 productSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// Calculate total stock from variants and colors
+productSchema.pre('save', function(next) {
+  let totalStock = 0;
+  
+  if (this.variants && this.variants.length > 0) {
+    totalStock = this.variants.reduce((sum, variant) => sum + variant.stock, 0);
+  } else if (this.colors && this.colors.length > 0) {
+    totalStock = this.colors.reduce((sum, color) => sum + color.stock, 0);
+  } else {
+    totalStock = this.stock;
+  }
+  
+  this.stock = totalStock;
+  next();
+});
+
+// Generate SKU for variants if not provided
+productSchema.pre('save', function(next) {
+  if (this.variants && this.variants.length > 0) {
+    this.variants = this.variants.map(variant => {
+      if (!variant.sku) {
+        // Generate SKU: First 3 letters of product name + variant label + random 4 digits
+        const prefix = this.name.substring(0, 3).toUpperCase();
+        const random = Math.floor(1000 + Math.random() * 9000);
+        variant.sku = `${prefix}-${variant.label}-${random}`;
+      }
+      return variant;
+    });
+  }
   next();
 });
 

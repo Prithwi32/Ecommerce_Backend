@@ -9,6 +9,32 @@ exports.productSchema = Joi.object({
     category: Joi.string().required().hex().length(24),
     brand: Joi.string().required().hex().length(24),
     stock: Joi.number().required().min(0),
+    variants: Joi.array().items(
+        Joi.object({
+            label: Joi.string().required(),
+            stock: Joi.number().required().min(0),
+            price: Joi.number().min(0),
+            dimensions: Joi.object({
+                width: Joi.number().min(0),
+                length: Joi.number().min(0),
+                unit: Joi.string().valid('cm', 'm', 'in', 'ft').default('m')
+            }).optional(),
+            sku: Joi.string()
+        })
+    ),
+    colors: Joi.array().items(
+        Joi.object({
+            name: Joi.string().required(),
+            code: Joi.string().required(),  // Hex code or color name
+            stock: Joi.number().required().min(0),
+            images: Joi.array().items(
+                Joi.object({
+                    public_id: Joi.string().required(),
+                    url: Joi.string().uri().required()
+                })
+            )
+        })
+    ),
     images: Joi.array().items(
         Joi.object({
             public_id: Joi.string().required(),

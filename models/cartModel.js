@@ -12,6 +12,22 @@ const cartSchema = new mongoose.Schema({
             ref: 'Product',
             required: true
         },
+        variant: {
+            label: String,
+            price: Number,
+            dimensions: {
+                width: Number,
+                length: Number,
+                unit: {
+                    type: String,
+                    enum: ['cm', 'm', 'in', 'ft']
+                }
+            }
+        },
+        color: {
+            name: String,
+            code: String
+        },
         quantity: {
             type: Number,
             required: true,
@@ -30,14 +46,22 @@ const cartSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Prevent duplicate products in cart
-cartSchema.index({ user: 1, 'items.product': 1 }, { unique: true });
+// Prevent duplicate products with same variant and color in cart
+cartSchema.index(
+    { 
+        user: 1, 
+        'items.product': 1,
+        'items.variant.label': 1,
+        'items.color.name': 1
+    }, 
+    { unique: true }
+);
 
 // Populate product details when finding cart
 cartSchema.pre(/^find/, function(next) {
     this.populate({
         path: 'items.product',
-        select: 'name price images'
+        select: 'name price images variants colors'
     });
     next();
 });
@@ -51,7 +75,17 @@ cartSchema.pre('save', async function(next) {
         for (const item of this.items) {
             const product = await Product.findById(item.product);
             if (product) {
-                total += product.price * item.quantity;
+                let itemPrice = product.price;
+
+                // Get price from variant if exists
+                if (item.variant && item.variant.label) {
+                    const variant = product.variants.find(v => v.label === item.variant.label);
+                    if (variant && variant.price) {
+                        itemPrice = variant.price;
+                    }
+                }
+
+                total += itemPrice * item.quantity;
             }
         }
         
@@ -71,12 +105,34 @@ cartSchema.methods.validateStock = async function() {
 
     for (const item of this.items) {
         const product = await Product.findById(item.product);
-        if (product && item.quantity > product.stock) {
-            stockErrors.push({
-                product: product.name,
-                requested: item.quantity,
-                available: product.stock
-            });
+        if (product) {
+            let availableStock = product.stock;
+
+            // Check variant stock if variant is selected
+            if (item.variant && item.variant.label) {
+                const variant = product.variants.find(v => v.label === item.variant.label);
+                if (variant) {
+                    availableStock = variant.stock;
+                }
+            }
+
+            // Check color stock if color is selected
+            if (item.color && item.color.name) {
+                const color = product.colors.find(c => c.name === item.color.name);
+                if (color) {
+                    availableStock = color.stock;
+                }
+            }
+
+            if (item.quantity > availableStock) {
+                stockErrors.push({
+                    product: product.name,
+                    variant: item.variant?.label,
+                    color: item.color?.name,
+                    requested: item.quantity,
+                    available: availableStock
+                });
+            }
         }
     }
 

@@ -12,6 +12,22 @@ const orderSchema = new mongoose.Schema({
       ref: 'Product',
       required: [true, 'Order item must have a product']
     },
+    variant: {
+      label: String,
+      price: Number,
+      dimensions: {
+        width: Number,
+        length: Number,
+        unit: {
+          type: String,
+          enum: ['cm', 'm', 'in', 'ft']
+        }
+      }
+    },
+    color: {
+      name: String,
+      code: String
+    },
     quantity: {
       type: Number,
       required: [true, 'Order item must have a quantity'],
@@ -92,6 +108,8 @@ const orderSchema = new mongoose.Schema({
 
 // Add index for better query performance
 orderSchema.index({ user: 1, createdAt: -1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ 'paymentInfo.status': 1 });
 
 // Virtual populate for user details
 orderSchema.virtual('userDetails', {
@@ -132,16 +150,50 @@ orderSchema.pre('save', async function(next) {
   if (this.status === 'processing') {
     // Decrease stock when order is processing
     for (const item of this.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.quantity }
-      });
+      const product = await Product.findById(item.product);
+      if (product) {
+        if (item.variant && item.variant.label) {
+          // Update variant stock
+          const variant = product.variants.find(v => v.label === item.variant.label);
+          if (variant) {
+            variant.stock -= item.quantity;
+          }
+        } else if (item.color && item.color.name) {
+          // Update color stock
+          const color = product.colors.find(c => c.name === item.color.name);
+          if (color) {
+            color.stock -= item.quantity;
+          }
+        } else {
+          // Update main product stock
+          product.stock -= item.quantity;
+        }
+        await product.save();
+      }
     }
   } else if (this.status === 'cancelled') {
     // Increase stock when order is cancelled
     for (const item of this.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: item.quantity }
-      });
+      const product = await Product.findById(item.product);
+      if (product) {
+        if (item.variant && item.variant.label) {
+          // Update variant stock
+          const variant = product.variants.find(v => v.label === item.variant.label);
+          if (variant) {
+            variant.stock += item.quantity;
+          }
+        } else if (item.color && item.color.name) {
+          // Update color stock
+          const color = product.colors.find(c => c.name === item.color.name);
+          if (color) {
+            color.stock += item.quantity;
+          }
+        } else {
+          // Update main product stock
+          product.stock += item.quantity;
+        }
+        await product.save();
+      }
     }
   }
 
