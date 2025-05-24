@@ -6,6 +6,7 @@ const { uploadImage, uploadMultipleImages } = require('../utils/imageHandler');
 // @route   POST /api/v1/upload/:folder
 // @access  Private/Admin
 exports.uploadImage = asyncHandler(async (req, res, next) => {
+    console.log(req?.params)
     const { folder } = req.params;
     const allowedFolders = ['product', 'brand', 'category'];
     

@@ -38,6 +38,9 @@ exports.uploadImage = async (file, folder) => {
 
         return result;
     } catch (error) {
+
+        console.log(error,'error')
+
         // If it's our custom error, throw it as is
         if (error instanceof ErrorResponse) {
             throw error;

@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 // @desc    Upload image to Cloudinary
 // @route   POST /api/v1/brands/upload-image
 // @access  Private/Admin
+
 exports.uploadImage = asyncHandler(async (req, res, next) => {
     const fileToUpload = req.files ? req.files[0] : req.file;
     const result = await cloudinaryUpload(fileToUpload, 'brands', 'temp');

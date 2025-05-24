@@ -22,6 +22,157 @@
 						"body": {
 							"mode": "raw",
 							"raw": {
+								"name": "Classic T-Shirt",
+								"sku": "TSHIRT-001",
+								"description": "A comfortable cotton t-shirt.",
+								"price": 499,
+								"category": "65f1a2b3c4d5e6f7g8h9i0j1",
+								"brand": "65f1a2b3c4d5e6f7g8h9i0j2",
+								"stock": 30,
+								"variants": [
+									{ "label": "S", "stock": 10, "price": 499, "size": "S" },
+									{ "label": "M", "stock": 10, "price": 499, "size": "M" },
+									{ "label": "L", "stock": 10, "price": 499, "size": "L" }
+								],
+								"colors": [
+									{
+										"name": "Red",
+										"code": "#FF0000",
+										"stock": 15,
+										"images": [
+											{ "public_id": "red1", "url": "https://example.com/red1.jpg" }
+										]
+									}
+								],
+								"images": [
+									{ "public_id": "main", "url": "https://example.com/main.jpg" }
+								],
+								"tags": ["tshirt", "cotton", "summer"]
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"]
+						},
+						"description": "Create a single clothing product with size as string"
+					}
+				},
+				{
+					"name": "Create Single Product (Material)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"name": "Premium Silk Fabric",
+								"sku": "SILK-001",
+								"description": "High-quality silk fabric for dressmaking.",
+								"price": 1299,
+								"category": "65f1a2b3c4d5e6f7g8h9i0j4",
+								"brand": "65f1a2b3c4d5e6f7g8h9i0j5",
+								"stock": 90,
+								"variants": [
+									{
+										"label": "2m x 5m",
+										"stock": 50,
+										"price": 1299,
+										"dimensions": { "width": 2, "length": 5, "unit": "m" }
+									},
+									{
+										"label": "3m x 5m",
+										"stock": 40,
+										"price": 1599,
+										"dimensions": { "width": 3, "length": 5, "unit": "m" }
+									}
+								],
+								"images": [
+									{ "public_id": "silk1", "url": "https://example.com/silk1.jpg" }
+								],
+								"tags": ["fabric", "silk", "material"]
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"]
+						},
+						"description": "Create a single material product with dimensions"
+					}
+				},
+				{
+					"name": "Create Single Product (Custom Size)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"name": "Custom Mattress",
+								"sku": "MATTRESS-001",
+								"description": "Custom size mattress for your bed.",
+								"price": 4999,
+								"category": "65f1a2b3c4d5e6f7g8h9i0j6",
+								"brand": "65f1a2b3c4d5e6f7g8h9i0j7",
+								"stock": 5,
+								"variants": [
+									{
+										"label": "Custom King",
+										"stock": 2,
+										"price": 5999,
+										"size": {
+											"type": "custom",
+											"value": { "width": 180, "length": 200, "unit": "cm" }
+										}
+									},
+									{
+										"label": "Custom Queen",
+										"stock": 3,
+										"price": 4999,
+										"size": {
+											"type": "custom",
+											"value": { "width": 150, "length": 200, "unit": "cm" }
+										}
+									}
+								],
+								"images": [
+									{ "public_id": "mattress1", "url": "https://example.com/mattress1.jpg" }
+								],
+								"tags": ["mattress", "custom", "bed"]
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"]
+						},
+						"description": "Create a single custom product with size as object"
+					}
+				},
+				{
+					"name": "Create Single Product (Clothing)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
 								"name": "Nike Air Max 2024",
 								"description": "The latest Nike Air Max shoes with advanced comfort technology",
 								"price": 199.99,
@@ -373,6 +524,79 @@
 							"path": ["api", "v1", "products", "bulk"]
 						},
 						"description": "Create multiple products in bulk with different variant types"
+					}
+				},
+				{
+					"name": "Create Bulk Products (Multi-Type)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"products": [
+									{
+										"name": "Classic T-Shirt",
+										"sku": "TSHIRT-001",
+										"description": "A comfortable cotton t-shirt.",
+										"price": 499,
+										"category": "CATEGORY_ID_1",
+										"brand": "BRAND_ID_1",
+										"stock": 30,
+										"variants": [
+											{ "label": "S", "stock": 10, "price": 499, "size": "S" },
+											{ "label": "M", "stock": 10, "price": 499, "size": "M" }
+										],
+										"colors": [
+											{
+												"name": "Red",
+												"code": "#FF0000",
+												"stock": 15,
+												"images": [
+													{ "public_id": "red1", "url": "https://example.com/red1.jpg" }
+												]
+											}
+										],
+										"images": [
+											{ "public_id": "main", "url": "https://example.com/main.jpg" }
+										],
+										"tags": ["tshirt", "cotton", "summer"]
+									},
+									{
+										"name": "Premium Silk Ribbon",
+										"sku": "RIBBON-001",
+										"description": "High-quality silk ribbon for crafts.",
+										"price": 199,
+										"category": "CATEGORY_ID_2",
+										"brand": "BRAND_ID_2",
+										"stock": 100,
+										"variants": [
+											{
+												"label": "2m x 5cm",
+												"stock": 50,
+												"price": 199,
+												"dimensions": { "width": 5, "length": 200, "unit": "cm" }
+											}
+										],
+										"images": [
+											{ "public_id": "ribbon1", "url": "https://example.com/ribbon1.jpg" }
+										],
+										"tags": ["ribbon", "crafts"]
+									}
+								]
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/bulk",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products", "bulk"]
+						},
+						"description": "Create multiple products in bulk (multi-type: T-Shirt, Ribbon, etc.)"
 					}
 				}
 			]

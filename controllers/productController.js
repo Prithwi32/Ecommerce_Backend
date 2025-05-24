@@ -133,6 +133,17 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     session.startTransaction();
 
     try {
+        // Check if product with the same name already exists
+        const existingProduct = await Product.findOne({ name: req.body.name });
+        if (existingProduct) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(400).json({
+                success: false,
+                message: 'Product already exists'
+            });
+        }
+
         // Set default values for product
         const productData = {
             ...req.body,

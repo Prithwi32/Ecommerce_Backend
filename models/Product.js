@@ -9,6 +9,15 @@ const productSchema = new mongoose.Schema({
     maxlength: [100, 'Product name cannot be more than 100 characters']
   },
   slug: String,
+  sku: { type: String, required: true },
+  isSale: {
+    type: Boolean,
+    default: false
+  },
+  salePrice: {
+    type: Number,
+    min: [0, 'Sale price must be greater than 0']
+  },
   description: {
     type: String,
     required: [true, 'A product must have a description'],
@@ -34,50 +43,33 @@ const productSchema = new mongoose.Schema({
     min: [0, 'Stock cannot be negative']
   },
   variants: [{
-    label: {
-      type: String,
-      required: [true, 'Variant must have a label']
-    },
-    stock: {
-      type: Number,
-      required: [true, 'Variant must have stock quantity'],
-      min: [0, 'Variant stock cannot be negative']
-    },
-    price: {
-      type: Number,
-      min: [0, 'Variant price must be greater than or equal to 0']
+    label: { type: String, required: true },
+    stock: { type: Number, required: true, min: 0 },
+    price: { type: Number, min: 0 },
+    // Flexible size: string or object
+    size: {
+      type: mongoose.Schema.Types.Mixed // can be string or object
     },
     dimensions: {
-      width: {
-        type: Number,
-        min: [0, 'Width must be greater than or equal to 0']
-      },
-      length: {
-        type: Number,
-        min: [0, 'Length must be greater than or equal to 0']
-      },
+      width: { type: Number, min: 0 },
+      length: { type: Number, min: 0 },
+      height: { type: Number, min: 0 },
       unit: {
         type: String,
-        enum: ['cm', 'm', 'in', 'ft'],
+        enum: ['mm', 'cm', 'm', 'in', 'ft'],
         default: 'm'
       }
     },
-    sku: String
+    sku: { type: String },
+    images: [{
+      public_id: String,
+      url: String
+    }]
   }],
   colors: [{
-    name: {
-      type: String,
-      required: true
-    },
-    code: {
-      type: String,
-      required: true
-    },
-    stock: {
-      type: Number,
-      required: true,
-      min: [0, 'Color stock cannot be negative']
-    },
+    name: { type: String, required: true },
+    code: { type: String, required: true },
+    stock: { type: Number, required: true, min: 0 },
     images: [{
       public_id: String,
       url: String
@@ -98,12 +90,14 @@ const productSchema = new mongoose.Schema({
   },
   brand: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Brand'
+    ref: 'Brand',
+    required: [true, 'A product must belong to a brand']
   },
   specifications: [{
     key: String,
     value: String
   }],
+  tags: [{ type: String, trim: true }],
   isActive: {
     type: Boolean,
     default: true
@@ -159,7 +153,6 @@ productSchema.pre('save', function(next) {
 // Calculate total stock from variants and colors
 productSchema.pre('save', function(next) {
   let totalStock = 0;
-  
   if (this.variants && this.variants.length > 0) {
     totalStock = this.variants.reduce((sum, variant) => sum + variant.stock, 0);
   } else if (this.colors && this.colors.length > 0) {
@@ -167,7 +160,6 @@ productSchema.pre('save', function(next) {
   } else {
     totalStock = this.stock;
   }
-  
   this.stock = totalStock;
   next();
 });
@@ -177,7 +169,6 @@ productSchema.pre('save', function(next) {
   if (this.variants && this.variants.length > 0) {
     this.variants = this.variants.map(variant => {
       if (!variant.sku) {
-        // Generate SKU: First 3 letters of product name + variant label + random 4 digits
         const prefix = this.name.substring(0, 3).toUpperCase();
         const random = Math.floor(1000 + Math.random() * 9000);
         variant.sku = `${prefix}-${variant.label}-${random}`;

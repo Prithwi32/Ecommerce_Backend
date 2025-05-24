@@ -10,7 +10,8 @@ const {
     getFeaturedProducts,
     getRelatedProducts,
     getSalesAnalytics,
-    downloadSalesReport
+    downloadSalesReport,
+    createBulkProducts
 } = require('../controllers/productController');
 
 const { protect, authorize } = require('../middleware/auth');
@@ -31,7 +32,11 @@ router.use(authorize('admin'));
 
 // Product CRUD operations
 router.route('/')
-    .post(validate(productSchema), createProduct);
+    .post(validate(productSchema), createProduct)
+    .get(getProducts);
+
+router.route('/bulk')
+    .post(validate(productSchema), createBulkProducts);
 
 router.route('/:id')
     .put(validate(productSchema), updateProduct)

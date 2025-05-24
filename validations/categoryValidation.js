@@ -7,7 +7,8 @@ exports.categorySchema = Joi.object({
     image: Joi.object({
         public_id: Joi.string().required(),
         url: Joi.string().uri().required()
-    }),
+    }).optional(),
+    parent: Joi.string().hex().length(24).allow(null),
     isActive: Joi.boolean().default(true)
 });
 

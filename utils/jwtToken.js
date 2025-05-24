@@ -18,7 +18,8 @@ const sendTokenResponse = (user, statusCode, res) => {
     const options = {
         expires: new Date(Date.now() + days * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'none',      // <- important for cross-site cookies
+        secure: true           
     };
 
     if (process.env.NODE_ENV === 'production') {

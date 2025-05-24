@@ -102,4 +102,30 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
         success: true,
         data: {}
     });
+});
+
+// @desc    Get categories as tree
+// @route   GET /api/v1/categories/tree
+// @access  Public
+exports.getCategoryTree = asyncHandler(async (req, res) => {
+    const categories = await Category.find({ isActive: true }).lean();
+
+    // Build a map of id -> category
+    const map = {};
+    categories.forEach(cat => { map[cat._id] = { ...cat, subcategories: [] }; });
+
+    // Build the tree
+    const tree = [];
+    categories.forEach(cat => {
+        if (cat.parent) {
+            map[cat.parent]?.subcategories.push(map[cat._id]);
+        } else {
+            tree.push(map[cat._id]);
+        }
+    });
+
+    res.status(200).json({
+        success: true,
+        data: tree
+    });
 }); 
