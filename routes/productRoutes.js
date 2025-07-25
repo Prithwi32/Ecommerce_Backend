@@ -24,6 +24,9 @@ router.get('/featured', getFeaturedProducts);
 router.get('/search', validate(productQuerySchema, 'query'), getProducts);
 
 // Public routes - Product specific
+// Product CRUD operations
+router.route('/')
+    .get(getProducts);
 router.get('/:id', getProduct);
 router.get('/:id/related', getRelatedProducts);
 // Protected admin routes
