@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "a8a2a3a3-1b4f-4a7e-8b3a-3e3e3e3e3e3e",
+		"name": "Product Search",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Keyword Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?search=phone",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "phone"
+						}
+					]
+				},
+				"description": "Search for products with the keyword 'phone' in the name or description."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Brand",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?brand=Apple",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "brand",
+							"value": "Apple"
+						}
+					]
+				},
+				"description": "Get all products with the brand 'Apple'."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Color",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?colors=Red,Blue",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "colors",
+							"value": "Red,Blue"
+						}
+					]
+				},
+				"description": "Get all products with the color Red or Blue."
+			},
+			"response": []
+		},
+		{
+			"name": "Advanced Filtering (Price > 1000)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?price[gt]=1000",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "price[gt]",
+							"value": "1000"
+						}
+					]
+				},
+				"description": "Get all products with a price greater than 1000."
+			},
+			"response": []
+		},
+		{
+			"name": "Sort by Price (Descending)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?sort=-price",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "-price"
+						}
+					]
+				},
+				"description": "Get all products sorted by price in descending order."
+			},
+			"response": []
+		},
+		{
+			"name": "Pagination",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?page=2&limit=5",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				},
+				"description": "Get the second page of products with 5 products per page."
+			},
+			"response": []
+		},
+		{
+			"name": "Limit Fields",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products?fields=name,price",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "name,price"
+						}
+					]
+				},
+				"description": "Get only the name and price of all products."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}

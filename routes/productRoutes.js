@@ -19,7 +19,12 @@ const { validateImage } = require('../middleware/upload');
 const validate = require('../middleware/validate');
 const { productSchema, productQuerySchema, analyticsQuerySchema } = require('../validations/productValidation');
 
+
+
 // Public routes - Special endpoints
+router.route('/')
+    .get(getProducts);
+
 router.get('/featured', getFeaturedProducts);
 router.get('/search', validate(productQuerySchema, 'query'), getProducts);
 
@@ -33,7 +38,6 @@ router.use(authorize('admin'));
 // Product CRUD operations
 router.route('/')
     .post(validate(productSchema), createProduct)
-    .get(getProducts);
 
 router.route('/bulk')
     .post(validate(productSchema), createBulkProducts);
