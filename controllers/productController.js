@@ -148,7 +148,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
         const productData = {
             ...req.body,
             isActive: true,
-            isFeatured: req.body.isFeatured || false,
+            featured: req.body.featured || false,
             soldCount: 0,
             averageRating: 0,
             reviewCount: 0
@@ -316,7 +316,7 @@ exports.getFeaturedProducts = asyncHandler(async (req, res) => {
     // Get featured products with additional sorting criteria
     const products = await Product.find({ 
         isActive: true,
-        isFeatured: true,
+        featured: true,
         stock: { $gt: 0 } // Only in-stock featured products
     })
         .populate('category', 'name')
@@ -607,7 +607,7 @@ exports.createBulkProducts = asyncHandler(async (req, res, next) => {
             const defaultedProductData = {
                 ...productData,
                 isActive: true,
-                isFeatured: productData.isFeatured || false,
+                featured: productData.featured || false,
                 soldCount: 0,
                 averageRating: 0,
                 reviewCount: 0
