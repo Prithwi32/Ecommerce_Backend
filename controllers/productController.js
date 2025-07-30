@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const APIFeatures = require('../utils/apiFeatures');
 const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 const { uploadImage, uploadMultipleImages, deleteImage } = require('../utils/imageHandler');
@@ -10,78 +11,23 @@ const Order = require('../models/Order');
 // @route   GET /api/v1/products
 // @access  Public
 exports.getProducts = asyncHandler(async (req, res) => {
-    const {
-        search,
-        category,
-        brand,
-        minPrice,
-        maxPrice,
-        sortBy = 'createdAt',
-        sortOrder = 'desc',
-        page = 1,
-        limit = 10,
-        featured,
-        inStock
-    } = req.query;
+    const features = new APIFeatures(Product.find({ isActive: true }), req.query);
+    await features.filter();
+    features.search().sort().limitFields().paginate();
 
-    // Build query
-    const query = { isActive: true };
+    const products = await features.query.populate('brand', 'name logo').populate('category', 'name');
 
-    // Search by name or description
-    if (search) {
-        query.$or = [
-            { name: { $regex: search, $options: 'i' } },
-            { description: { $regex: search, $options: 'i' } }
-        ];
-    }
+    // Manually handle pagination to get total count after filtering
+    const totalQuery = new APIFeatures(Product.find({ isActive: true }), req.query);
+    await totalQuery.filter();
+    totalQuery.search();
 
-    // Filter by category
-    if (category) {
-        query.category = category;
-    }
-
-    // Filter by brand
-    if (brand) {
-        query.brand = brand;
-    }
-
-    // Filter by price range
-    if (minPrice !== undefined || maxPrice !== undefined) {
-        query.price = {};
-        if (minPrice !== undefined) query.price.$gte = minPrice;
-        if (maxPrice !== undefined) query.price.$lte = maxPrice;
-    }
-
-    // Filter by featured status
-    if (featured !== undefined) {
-        query.isFeatured = featured === 'true';
-    }
-
-    // Filter by stock status
-    if (inStock !== undefined) {
-        query.stock = inStock === 'true' ? { $gt: 0 } : { $lte: 0 };
-    }
-
-    // Build sort object
-    const sortOptions = {};
-    if (sortBy && sortOrder) {
-        sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
-    }
-
-    // Pagination
+    const total = await Product.countDocuments(totalQuery.query);
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const total = await Product.countDocuments(query);
 
-    // Execute query
-    const products = await Product.find(query)
-        .populate('brand', 'name logo')
-        .populate('category', 'name')
-        .sort(sortOptions)
-        .skip(startIndex)
-        .limit(limit);
-
-    // Pagination result
     const pagination = {};
 
     if (endIndex < total) {
