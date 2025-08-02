@@ -282,20 +282,31 @@ exports.getFeaturedProducts = asyncHandler(async (req, res) => {
 });
 
 exports.getProductByCategory = asyncHandler(async (req, res) => {
-    const products = await Product.find({ category: req.params.category })
+  const rawCategoryParam = req.params.category;
+
+  // Extract ObjectId from "clothing-68319265ff8f70d7d4e214cf"
+  const categoryId = rawCategoryParam.replace(/^.*-/, ''); // remove prefix
+
+  // Optional: validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+    return res.status(400).json({ message: 'Invalid category ID' });
+  }
+
+  const products = await Product.find({ category: categoryId })
     .populate('category', 'name')
     .populate('brand', 'name')
-    .sort({ 
-        soldCount: -1,      // Best selling first
-        averageRating: -1,  // Highly rated next
-        createdAt: -1       // Latest products next
+    .sort({
+      soldCount: -1,
+      averageRating: -1,
+      createdAt: -1,
     })
     .limit(8);
-    res.status(200).json({
-        success: true,
-        count: products.length,
-        data: products
-    });
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    data: products,
+  });
 });
 
 // @desc    Get related products
