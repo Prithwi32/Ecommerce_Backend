@@ -281,6 +281,23 @@ exports.getFeaturedProducts = asyncHandler(async (req, res) => {
     });
 });
 
+exports.getProductByCategory = asyncHandler(async (req, res) => {
+    const products = await Product.find({ category: req.params.category })
+    .populate('category', 'name')
+    .populate('brand', 'name')
+    .sort({ 
+        soldCount: -1,      // Best selling first
+        averageRating: -1,  // Highly rated next
+        createdAt: -1       // Latest products next
+    })
+    .limit(8);
+    res.status(200).json({
+        success: true,
+        count: products.length,
+        data: products
+    });
+});
+
 // @desc    Get related products
 // @route   GET /api/products/:id/related
 // @access  Public
