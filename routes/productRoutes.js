@@ -11,7 +11,8 @@ const {
     getRelatedProducts,
     getSalesAnalytics,
     downloadSalesReport,
-    createBulkProducts
+    createBulkProducts,
+    getProductByCategory
 } = require('../controllers/productController');
 
 const { protect, authorize } = require('../middleware/auth');
@@ -26,6 +27,7 @@ router.route('/')
     .get(getProducts);
 
 router.get('/featured', getFeaturedProducts);
+router.get('/category/:category', getProductByCategory);
 router.get('/search', validate(productQuerySchema, 'query'), getProducts);
 
 // Public routes - Product specific
