@@ -6,10 +6,15 @@ const User = require('../models/userModel');
 // @route   GET /api/users/profile
 // @access  Private
 exports.getProfile = asyncHandler(async (req, res) => {
+
+
     const user = await User.findById(req.user.id)
         .select('-password')
+        .select('')
         .populate('addresses')
         .populate('wishlist');
+
+
 
     res.status(200).json({
         success: true,
@@ -21,7 +26,8 @@ exports.getProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 exports.updateProfile = asyncHandler(async (req, res) => {
-    const { name, email, phone } = req.body;
+    console.log(req?.body)
+    const { name, email, phone, address, city, state, zipCode } = req.body;
 
     const user = await User.findById(req.user.id);
 
@@ -34,7 +40,11 @@ exports.updateProfile = asyncHandler(async (req, res) => {
 
     user.name = name || user.name;
     user.email = email || user.email;
-    user.phone = phone || user.phone;
+    user.phoneNumber = phone || user.phone;
+    user.address = address || user.address;
+    user.city = city || user.city;
+    user.state = state || user.state;
+    user.zipCode = zipCode || user.zipCode;
 
     await user.save();
 
@@ -61,7 +71,7 @@ exports.getAddresses = asyncHandler(async (req, res) => {
 // @access  Private
 exports.updateAddress = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id);
-    
+
     const address = {
         street: req.body.street,
         city: req.body.city,
