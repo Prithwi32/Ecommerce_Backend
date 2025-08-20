@@ -2,11 +2,17 @@ const Joi = require('joi');
 
 // Schema for updating user profile
 exports.updateUserSchema = Joi.object({
-    name: Joi.string().min(2).max(50).trim(),
-    email: Joi.string().email(),
-    phone: Joi.string().pattern(/^[0-9]{10}$/).messages({
-        'string.pattern.base': 'Phone number must be 10 digits'
-    })
+  name: Joi.string().min(2).max(50).trim(),
+  email: Joi.string().email(),
+  phone: Joi.string().pattern(/^[0-9]{10}$/).messages({
+    'string.pattern.base': 'Phone number must be 10 digits'
+  }),
+  address: Joi.string().min(3).max(100),
+  city: Joi.string().min(2).max(50),
+  state: Joi.string().min(2).max(50),
+  zipCode: Joi.string().pattern(/^[0-9]{5,6}$/).messages({
+    'string.pattern.base': 'Zip Code must be 5 or 6 digits'
+  })
 }).min(1); // At least one field must be provided
 
 // Schema for updating/adding address
