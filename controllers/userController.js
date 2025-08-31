@@ -25,34 +25,40 @@ exports.getProfile = asyncHandler(async (req, res) => {
 // @desc    Update user profile
 // @route   PUT /api/users/profile
 // @access  Private
-exports.updateProfile = asyncHandler(async (req, res) => {
-    console.log(req?.body)
-    const { name, email, phone, address, city, state, zipCode } = req.body;
-
-    const user = await User.findById(req.user.id);
-
-    if (email && email !== user.email) {
-        const emailExists = await User.findOne({ email });
-        if (emailExists) {
-            throw new ErrorResponse('Email already exists', 400);
+exports.updateProfile = async (req, res) => {
+    try {
+        const { name, email, phone, addresses } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
         }
+
+        if (email && email !== user.email) {
+            const emailExists = await User.findOne({ email });
+            if (emailExists) {
+                return res.status(400).json({ success: false, message: "Email already exists" });
+            }
+        }
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+        user.phoneNumber = phone || user.phoneNumber;
+
+        // 🔹 Replace addresses if sent
+        if (addresses && Array.isArray(addresses)) {
+            user.addresses = addresses; 
+        }
+
+        await user.save();
+
+        res.status(200).json({ success: true, data: user });
+
+    } catch (error) {
+        console.error("Update Profile Error:", error);
+        res.status(500).json({ success: false, message: error.message || "Server Error" });
     }
+};
 
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.phoneNumber = phone || user.phone;
-    user.address = address || user.address;
-    user.city = city || user.city;
-    user.state = state || user.state;
-    user.zipCode = zipCode || user.zipCode;
-
-    await user.save();
-
-    res.status(200).json({
-        success: true,
-        data: user
-    });
-});
 
 // @desc    Get user addresses
 // @route   GET /api/users/addresses
