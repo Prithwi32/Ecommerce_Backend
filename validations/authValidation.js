@@ -17,6 +17,12 @@ exports.registerSchema = Joi.object({
         .pattern(new RegExp('^[a-zA-Z0-9]{6,30}$'))
         .messages({
             'string.pattern.base': 'Password must contain only letters and numbers'
+        }),
+    phoneNumber: Joi.string()
+        .pattern(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/)
+        .optional()
+        .messages({
+            'string.pattern.base': 'Please provide a valid phone number'
         })
 });
 

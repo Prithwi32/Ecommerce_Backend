@@ -24,6 +24,10 @@ router.get('/logout', logout);
 router.get('/me', protect, getMe);
 router.put('/updatepassword', protect, validate(updatePasswordSchema), updatePassword);
 router.post('/forgotpassword', forgotPassword);
-router.put('/resetpassword/:resettoken', resetPassword);
+// Support both path parameter and query parameter for reset password
+// Supports GET (validate token), PUT/POST (reset password with token)
+router.get('/resetpassword/:resettoken?', resetPassword);
+router.put('/resetpassword/:resettoken?', resetPassword);
+router.post('/resetpassword/:resettoken?', resetPassword);
 
 module.exports = router; 

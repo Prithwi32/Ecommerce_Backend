@@ -28,7 +28,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 
     res
         .status(statusCode)
-        .cookie('token', token, options)
+        .cookie('ribbon-pack-key', token, options)
         .json({
             success: true,
             token,

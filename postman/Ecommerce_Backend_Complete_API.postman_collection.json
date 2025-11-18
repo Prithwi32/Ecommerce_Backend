@@ -1,0 +1,1706 @@
+{
+	"info": {
+		"_postman_id": "ecommerce-backend-complete",
+		"name": "Ecommerce Backend - Complete API",
+		"description": "Complete Postman collection for Ecommerce Backend API with all endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Register a new user account"
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.environment.set(\"auth_token\", jsonData.token);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login user and get JWT token"
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "me"]
+						},
+						"description": "Get current logged in user details"
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "logout"]
+						},
+						"description": "Logout user and clear cookie"
+					}
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/updatepassword",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "updatepassword"]
+						},
+						"description": "Update user password"
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/forgotpassword",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "forgotpassword"]
+						},
+						"description": "Request password reset email"
+					}
+				},
+				{
+					"name": "Reset Password (GET - Validate Token)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/resetpassword/:resettoken",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "resetpassword", ":resettoken"],
+							"variable": [
+								{
+									"key": "resettoken",
+									"value": "your-reset-token-here"
+								}
+							]
+						},
+						"description": "Validate reset password token"
+					}
+				},
+				{
+					"name": "Reset Password (PUT - Set New Password)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/resetpassword/:resettoken",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "resetpassword", ":resettoken"],
+							"variable": [
+								{
+									"key": "resettoken",
+									"value": "your-reset-token-here"
+								}
+							]
+						},
+						"description": "Reset password with token"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "profile"]
+						},
+						"description": "Get user profile"
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Updated\",\n    \"phone\": \"1234567890\",\n    \"address\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "profile"]
+						},
+						"description": "Update user profile"
+					}
+				},
+				{
+					"name": "Get Addresses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/addresses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "addresses"]
+						},
+						"description": "Get all user addresses"
+					}
+				},
+				{
+					"name": "Add/Update Address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"street\": \"123 Main Street\",\n    \"city\": \"New York\",\n    \"state\": \"New York\",\n    \"postalCode\": \"10001\",\n    \"country\": \"USA\",\n    \"isDefault\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/addresses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "addresses"]
+						},
+						"description": "Add or update user address"
+					}
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/addresses/:addressId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "addresses", ":addressId"],
+							"variable": [
+								{
+									"key": "addressId",
+									"value": "address-id-here"
+								}
+							]
+						},
+						"description": "Delete user address"
+					}
+				},
+				{
+					"name": "Get Wishlist",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/wishlist",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "wishlist"]
+						},
+						"description": "Get user wishlist"
+					}
+				},
+				{
+					"name": "Add to Wishlist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/wishlist/:productId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "wishlist", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Add product to wishlist"
+					}
+				},
+				{
+					"name": "Remove from Wishlist",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/wishlist/:productId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "wishlist", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Remove product from wishlist"
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products?page=1&limit=10&sort=-createdAt",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "-createdAt"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "brand",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "price[gte]",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "price[lte]",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get all products with pagination and filters"
+					}
+				},
+				{
+					"name": "Search Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/search?search=laptop&page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "search"],
+							"query": [
+								{
+									"key": "search",
+									"value": "laptop"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Search products by keyword"
+					}
+				},
+				{
+					"name": "Get Featured Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/featured",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "featured"]
+						},
+						"description": "Get featured products"
+					}
+				},
+				{
+					"name": "Get Products by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/category/:category",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "category", ":category"],
+							"variable": [
+								{
+									"key": "category",
+									"value": "category-id-here"
+								}
+							]
+						},
+						"description": "Get products by category"
+					}
+				},
+				{
+					"name": "Get Single Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Get single product by ID"
+					}
+				},
+				{
+					"name": "Get Related Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/:id/related",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", ":id", "related"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Get related products"
+					}
+				},
+				{
+					"name": "Create Product (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nike Air Max 2024\",\n    \"description\": \"Premium running shoes with advanced comfort technology\",\n    \"price\": 199.99,\n    \"discountPrice\": 179.99,\n    \"category\": \"category-id-here\",\n    \"brand\": \"brand-id-here\",\n    \"stock\": 100,\n    \"sku\": \"NIKE-AM-2024\",\n    \"images\": [\n        {\n            \"public_id\": \"products/nike-air-max\",\n            \"url\": \"https://example.com/nike-air-max.jpg\"\n        }\n    ],\n    \"variants\": [\n        {\n            \"label\": \"US 7\",\n            \"stock\": 10,\n            \"price\": 199.99,\n            \"size\": \"7\"\n        },\n        {\n            \"label\": \"US 8\",\n            \"stock\": 15,\n            \"price\": 199.99,\n            \"size\": \"8\"\n        }\n    ],\n    \"colors\": [\n        {\n            \"name\": \"Black\",\n            \"code\": \"#000000\",\n            \"stock\": 25,\n            \"images\": [\n                {\n                    \"public_id\": \"products/nike-black\",\n                    \"url\": \"https://example.com/nike-black.jpg\"\n                }\n            ]\n        }\n    ],\n    \"specifications\": [\n        {\n            \"key\": \"Material\",\n            \"value\": \"Synthetic and mesh\"\n        }\n    ],\n    \"featured\": true,\n    \"tags\": [\"shoes\", \"running\", \"nike\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products"]
+						},
+						"description": "Create a new product (Admin only)"
+					}
+				},
+				{
+					"name": "Create Bulk Products (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\": [\n        {\n            \"name\": \"Product 1\",\n            \"description\": \"Description 1\",\n            \"price\": 99.99,\n            \"category\": \"category-id\",\n            \"brand\": \"brand-id\",\n            \"stock\": 50,\n            \"sku\": \"PROD-001\",\n            \"images\": [{\"public_id\": \"prod1\", \"url\": \"https://example.com/prod1.jpg\"}]\n        },\n        {\n            \"name\": \"Product 2\",\n            \"description\": \"Description 2\",\n            \"price\": 149.99,\n            \"category\": \"category-id\",\n            \"brand\": \"brand-id\",\n            \"stock\": 30,\n            \"sku\": \"PROD-002\",\n            \"images\": [{\"public_id\": \"prod2\", \"url\": \"https://example.com/prod2.jpg\"}]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/bulk",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "bulk"]
+						},
+						"description": "Create multiple products at once (Admin only)"
+					}
+				},
+				{
+					"name": "Update Product (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Product Name\",\n    \"price\": 249.99,\n    \"stock\": 75\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Update product (Admin only)"
+					}
+				},
+				{
+					"name": "Delete Product (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/products/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Delete product (Admin only)"
+					}
+				},
+				{
+					"name": "Upload Product Images (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/:id/images",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", ":id", "images"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Upload product images (Admin only)"
+					}
+				},
+				{
+					"name": "Get Sales Analytics (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/products/analytics/sales?startDate=2024-01-01&endDate=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "analytics", "sales"],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-12-31"
+								}
+							]
+						},
+						"description": "Get product sales analytics (Admin only)"
+					}
+				},
+				{
+					"name": "Download Sales Report (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/products/analytics/sales/download?startDate=2024-01-01&endDate=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "products", "analytics", "sales", "download"],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-12-31"
+								}
+							]
+						},
+						"description": "Download sales report as PDF (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						},
+						"description": "Get all categories"
+					}
+				},
+				{
+					"name": "Get Single Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "category-id-here"
+								}
+							]
+						},
+						"description": "Get single category by ID"
+					}
+				},
+				{
+					"name": "Create Category (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Electronics\",\n    \"description\": \"Electronic products and gadgets\",\n    \"slug\": \"electronics\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						},
+						"description": "Create a new category (Admin only)"
+					}
+				},
+				{
+					"name": "Update Category (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Category Name\",\n    \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "category-id-here"
+								}
+							]
+						},
+						"description": "Update category (Admin only)"
+					}
+				},
+				{
+					"name": "Delete Category (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "category-id-here"
+								}
+							]
+						},
+						"description": "Delete category (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Brands",
+			"item": [
+				{
+					"name": "Get All Brands",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/brands",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands"]
+						},
+						"description": "Get all brands"
+					}
+				},
+				{
+					"name": "Get Single Brand",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/brands/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "brand-id-here"
+								}
+							]
+						},
+						"description": "Get single brand by ID"
+					}
+				},
+				{
+					"name": "Create Brand (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nike\",\n    \"description\": \"Just Do It\",\n    \"slug\": \"nike\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/brands",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands"]
+						},
+						"description": "Create a new brand (Admin only)"
+					}
+				},
+				{
+					"name": "Update Brand (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Brand Name\",\n    \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/brands/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "brand-id-here"
+								}
+							]
+						},
+						"description": "Update brand (Admin only)"
+					}
+				},
+				{
+					"name": "Delete Brand (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/brands/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "brand-id-here"
+								}
+							]
+						},
+						"description": "Delete brand (Admin only)"
+					}
+				},
+				{
+					"name": "Upload Brand Logo (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/brands/:id/logo",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands", ":id", "logo"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "brand-id-here"
+								}
+							]
+						},
+						"description": "Upload brand logo (Admin only)"
+					}
+				},
+				{
+					"name": "Upload Image (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/brands/upload-image",
+							"host": ["{{base_url}}"],
+							"path": ["api", "brands", "upload-image"]
+						},
+						"description": "Upload image and get URL (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cart",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cart"]
+						},
+						"description": "Get user's cart"
+					}
+				},
+				{
+					"name": "Add to Cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": \"product-id-here\",\n    \"quantity\": 2,\n    \"variant\": {\n        \"label\": \"US 8\"\n    },\n    \"color\": {\n        \"name\": \"Black\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cart"]
+						},
+						"description": "Add item to cart"
+					}
+				},
+				{
+					"name": "Update Cart Item",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart/:productId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cart", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Update cart item quantity"
+					}
+				},
+				{
+					"name": "Remove from Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cart/:productId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cart", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-id-here"
+								}
+							]
+						},
+						"description": "Remove item from cart"
+					}
+				},
+				{
+					"name": "Clear Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cart",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cart"]
+						},
+						"description": "Clear entire cart"
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get My Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/my-orders",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders", "my-orders"]
+						},
+						"description": "Get current user's orders"
+					}
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"product\": \"product-id-here\",\n            \"quantity\": 2,\n            \"price\": 199.99\n        }\n    ],\n    \"itemsPrice\": 399.98,\n    \"taxPrice\": 40.00,\n    \"shippingPrice\": 10.00,\n    \"totalAmount\": 449.98,\n    \"paymentInfo\": {\n        \"method\": \"razorpay\",\n        \"status\": \"pending\",\n        \"razorpayOrderId\": \"order_123\",\n        \"razorpayPaymentId\": \"pay_123\",\n        \"razorpaySignature\": \"signature_123\"\n    },\n    \"shippingAddress\": {\n        \"street\": \"123 Main Street\",\n        \"city\": \"New York\",\n        \"state\": \"New York\",\n        \"postalCode\": \"10001\",\n        \"country\": \"USA\"\n    },\n    \"notes\": \"Please deliver in the morning\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orders",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders"]
+						},
+						"description": "Create a new order"
+					}
+				},
+				{
+					"name": "Verify Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"razorpay_order_id\": \"order_123\",\n    \"razorpay_payment_id\": \"pay_123\",\n    \"razorpay_signature\": \"signature_123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orders/verify",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders", "verify"]
+						},
+						"description": "Verify Razorpay payment"
+					}
+				},
+				{
+					"name": "Get All Orders (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders?page=1&limit=10&status=pending",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						},
+						"description": "Get all orders (Admin only)"
+					}
+				},
+				{
+					"name": "Get Single Order (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order-id-here"
+								}
+							]
+						},
+						"description": "Get single order by ID (Admin only)"
+					}
+				},
+				{
+					"name": "Update Order Status (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"shipped\",\n    \"trackingNumber\": \"TRACK123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders", ":id", "status"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order-id-here"
+								}
+							]
+						},
+						"description": "Update order status (Admin only)"
+					}
+				},
+				{
+					"name": "Mark Order as Delivered (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/deliver",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders", ":id", "deliver"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order-id-here"
+								}
+							]
+						},
+						"description": "Mark order as delivered (Admin only)"
+					}
+				},
+				{
+					"name": "Delete Order (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order-id-here"
+								}
+							]
+						},
+						"description": "Delete order (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews?product=product-id&page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews"],
+							"query": [
+								{
+									"key": "product",
+									"value": "product-id"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get all reviews with filters"
+					}
+				},
+				{
+					"name": "Get Single Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review-id-here"
+								}
+							]
+						},
+						"description": "Get single review by ID"
+					}
+				},
+				{
+					"name": "Get My Reviews",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reviews/my-reviews",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews", "my-reviews"]
+						},
+						"description": "Get current user's reviews"
+					}
+				},
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product\": \"product-id-here\",\n    \"rating\": 5,\n    \"comment\": \"Great product! Highly recommended.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews"]
+						},
+						"description": "Create a new review"
+					}
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": 4,\n    \"comment\": \"Updated review comment\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review-id-here"
+								}
+							]
+						},
+						"description": "Update review"
+					}
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review-id-here"
+								}
+							]
+						},
+						"description": "Delete review"
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/users?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get all users with pagination (Admin only)"
+					}
+				},
+				{
+					"name": "Get Dashboard Stats (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "dashboard"]
+						},
+						"description": "Get dashboard statistics (Admin only)"
+					}
+				},
+				{
+					"name": "Update User Role (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/users/:id/role",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "users", ":id", "role"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Update user role (Admin only)"
+					}
+				},
+				{
+					"name": "Get Sales Analytics (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/analytics/sales?startDate=2024-01-01&endDate=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "analytics", "sales"],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-12-31"
+								}
+							]
+						},
+						"description": "Get sales analytics (Admin only)"
+					}
+				},
+				{
+					"name": "Get Inventory Analytics (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/analytics/inventory",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "analytics", "inventory"]
+						},
+						"description": "Get inventory analytics (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "Upload Image (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/upload/:folder",
+							"host": ["{{base_url}}"],
+							"path": ["api", "upload", ":folder"],
+							"variable": [
+								{
+									"key": "folder",
+									"value": "products"
+								}
+							]
+						},
+						"description": "Upload image to specific folder (Admin only)"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

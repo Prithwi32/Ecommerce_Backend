@@ -1,3 +1,6 @@
+// Load polyfill FIRST before any other modules
+require('./polyfill');
+
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -52,12 +55,23 @@ app.use(
   })
 );
 
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",")
+  : ["http://localhost:3000", "http://localhost:3001"];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(morgan("dev"));

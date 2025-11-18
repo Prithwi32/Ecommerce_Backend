@@ -1,0 +1,7 @@
+{
+  "watch": ["server.js", "controllers", "routes", "models", "utils", "config", "middleware"],
+  "ext": "js,json",
+  "ignore": ["node_modules", "public", "uploads"],
+  "exec": "node -r ./polyfill.js server.js",
+  "legacyWatch": true
+}
